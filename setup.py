@@ -6,9 +6,9 @@ def requirements(filename='requirements.txt'):
 
 
 setup(
-    name='lxml-ext-ipaddress',
+    name='lxml-xpath-ipaddress',
     version='0.1.0',
-    description='LXML extension library for ipaddress',
+    description='LXML xpath extension library for ipaddress',
     author='jschulman@juniper.net',
     packages=find_packages(),
     install_requires=requirements()

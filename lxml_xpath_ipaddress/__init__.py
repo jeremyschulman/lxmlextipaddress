@@ -3,13 +3,13 @@ MIT License
 
 Copyright (c) 2018 Jeremy Schulman
 
-This module defines an LXML extension library that wraps the ipaddress python module.
+This module defines an LXML xpath extension library that wraps the ipaddress python module.
 
 Examples
 --------
 
 from lxml import etree
-import pylxmlextipaddress
+
 
 # given "config" is an LXML XML structure, you can run the XPath to find all IPv4 network items:
 
@@ -26,9 +26,8 @@ print(items[0].text)
 from lxml.etree import FunctionNamespace
 import ipaddress
 from functools import wraps, lru_cache
-import re
 
-NAMESPACE = 'http://pylxmlipaddress.jeremyschulman.com'
+NAMESPACE = 'https://github.com/jeremyschulman/lxml-xpath-ipaddress'
 
 # register this namespace into the lxml system
 # the caller must use the NAMESPACE value when calling xpath with the namespace= argument
@@ -327,48 +326,6 @@ def in_subnet(value, subnet):
         return False
 
 
-def expand_paths(items):
-    """
-    Given a list of Element items, this generator will yield string paths
-    to the element from the top of the tree.  The LXML tree.getelementpath() function
-    returns a path with index elements, for example:
-
-        'security/group-vpn/server/ike/gateway[1]/address'
-
-    This function expands the [<n>] to the text value of that item, for example:
-
-        'security/group-vpn/server/ike/gateway[group-gw1]/address[172.18.1.1]'
-
-    Parameters
-    ----------
-    items : list[Elemenet]
-        A list of LXML Elemenet objects
-
-    Yields
-    ------
-    str
-        The expanded path substituting the [<n>] to string values
-    """
-    m = re.compile('\[\d+\]')
-    tree = items[0].getroottree()
-
-    def func(mo):
-        find = mo.string[:mo.end()]
-        if find == mo.string:
-            found = tree.xpath(find)[0].text
-        else:
-            found = tree.xpath(find)[0][0].text
-        return f'[{found}]'
-
-    for item in items:
-        path = tree.getelementpath(item)
-        replace = m.sub(func, path)
-        if path.endswith(']'):
-            yield replace
-        else:
-            yield f'{replace}[{item.text}]'
-
-
 # -----------------------------------------------------------------------------------------------------------------
 # These functions are bound into the LXML namespace.  See extension documentation for details
 # https://lxml.de/1.3/extensions.html
@@ -419,16 +376,16 @@ def nsf_in_subnet(dummy, ele, subnet):
 # Bind functions into LXML namespace object
 # -----------------------------------------------------------------------------------------------------------------
 
-_ns_ext['is-any-ip'] = make_nsf(is_any_ip)
-_ns_ext['is-host-ip'] = make_nsf(is_host_ip)
-_ns_ext['is-net-ip'] = make_nsf(is_net_ip)
+_ns_ext['ip-any'] = make_nsf(is_any_ip)
+_ns_ext['ip-host'] = make_nsf(is_host_ip)
+_ns_ext['ip-net'] = make_nsf(is_net_ip)
 
-_ns_ext['is-any-ip6'] = make_nsf(is_any_ip6)
-_ns_ext['is-net-ip6'] = make_nsf(is_net_ip6)
-_ns_ext['is-host-ip6'] = make_nsf(is_host_ip6)
+_ns_ext['ip6-any'] = make_nsf(is_any_ip6)
+_ns_ext['ip6-net'] = make_nsf(is_net_ip6)
+_ns_ext['ip6-host'] = make_nsf(is_host_ip6)
 
-_ns_ext['is-any-ip4'] = make_nsf(is_any_ip4)
-_ns_ext['is-net-ip4'] = make_nsf(is_net_ip4)
-_ns_ext['is-host-ip4'] = make_nsf(is_host_ip4)
+_ns_ext['ip4-any'] = make_nsf(is_any_ip4)
+_ns_ext['ip4-net'] = make_nsf(is_net_ip4)
+_ns_ext['ip4-host'] = make_nsf(is_host_ip4)
 
 _ns_ext['in-subnet'] = nsf_in_subnet

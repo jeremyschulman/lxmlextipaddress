@@ -1,9 +1,9 @@
 from lxml import etree
-import pylxmlextipaddress
+import lxml_xpath_ipaddress
 import ipaddress
 
 config = etree.parse(open('config.xml')).getroot()
-ns = {'ip': pylxmlextipaddress.NAMESPACE}
+ns = {'ip': lxml_xpath_ipaddress.NAMESPACE}
 
 print("""
 
