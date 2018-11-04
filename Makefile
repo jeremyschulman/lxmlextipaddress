@@ -4,6 +4,8 @@ PROJECT_VERSION=$(shell python setup.py --version)
 SOURCEDIR=$(subst -,_,$(PROJECT))
 SOURCES=$(shell find $(SOURCEDIR) -name '*.py')
 
+all:
+	python setup.py sdist bdist_wheel
 
 develop:
 	python setup.py develop
