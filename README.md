@@ -7,54 +7,52 @@ example:
 
 ````python
 from lxml import etree
-import pylxmlextipaddress
+from lxml_xpath_ipaddress import ip_ns
 
 # given "config" is an LXML XML structure, you can run the XPath to find all IPv4 network items:
 
-config = etree.parse('tests/config.xml').getroot()
+config = etree.parse('tests/config.xml')
 
-ns = {'ip': pylxmlextipaddress.NAMESPACE}
 
-items = config.xpath('//*[ip:is-net-ip4(.)', namespaces=ns)
+items = config.xpath('//*[ip:ip4-net(.)', namespaces=ip_ns)
 
 print(items[0].text)
 # >>> 10.10.0.0/16
 
 # Find all items that are in either the 172.18/16 or 101.10.201/24 subnets
 
-items = config.xpath('//*[ip:in-subnet(., "172.18.0.0/16") or ip:in-subnet(., "10.10.201.0/24")]', namespaces=ns)
+items = config.xpath('//*[ip:in-subnet(., "172.18.0.0/16") or ip:in-subnet(., "10.10.201.0/24")]',
+                     namespaces=ip_ns)
+                     
 print(items[0].text)
 # >>> 172.18.1.1
 ````
 
-
 # Install
 
 ```bash
-$ python setup.py install
+$ pip install lxml-xpath-ipaddress
 ```
-
-Will be posted to PyPI soon ... 
 
 # LXML Extension Functions
 
 ## Either IPv4 or IPv6
 
-  * is-any-ip(value)
-  * is-net-ip(value)
-  * is-host-ip(value)
+  * ip-any(value)
+  * ip-net(value)
+  * ip-host(value)
   
 ## IPv4
 
-  * is-any-ip4(value)
-  * is-net-ip4(value)
-  * is-host-ip4(value)
+  * ip4-any(value)
+  * ip4-net(value)
+  * ip4-host(value)
 
 ## IPv6
   
-  * is-any-ip6(value)
-  * is-net-ip6(value)
-  * is-host-ip6(value)
+  * ip6-any(value)
+  * ip6-net(value)
+  * ip6-host(value)
 
 ## Subnet Checking
 
@@ -62,6 +60,7 @@ Will be posted to PyPI soon ...
   
 # Python Functions
 
-The library contains these functions as general purpose functions as well, so that they can be used in other
-applications.  See the module doc-strings for use.  
+The library contains these functions as general purpose functions as well, 
+so that they can be used in other applications.  See the module doc-strings for use.  
+
   
